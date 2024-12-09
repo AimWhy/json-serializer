@@ -1,42 +1,61 @@
 {
   "name": "@brillout/json-serializer",
-  "version": "0.5.4",
+  "version": "0.5.15",
   "description": "Same as JSON but with added support for `Date`, `undefined`, `Map`, `Set`, and more.",
   "main": "./index.mjs",
   "exports": {
     ".": "./index.mjs",
     "./parse": {
-      "worker": "./dist/cjs/parse.js",
       "node": "./dist/cjs/parse.js",
-      "browser": "./dist/esm/parse.js"
+      "types": "./dist/esm/parse.d.ts",
+      "default": "./dist/esm/parse.js"
     },
     "./stringify": {
-      "worker": "./dist/cjs/stringify.js",
       "node": "./dist/cjs/stringify.js",
-      "browser": "./dist/esm/stringify.js"
+      "types": "./dist/esm/stringify.d.ts",
+      "default": "./dist/esm/stringify.js"
     }
   },
   "scripts": {
+    "========= Dev": "",
     "dev": "pnpm run tsc:watch:cjs",
-    "build": "pnpm run clean && pnpm run tsc:esm && pnpm run tsc:cjs",
-    "test": "self-import && node test/",
-    "docs": "mdocs",
+    "========= Build": "",
+    "build": "rm -rf dist/ && pnpm run tsc:esm && pnpm run tsc:cjs",
     "tsc:esm": "tsc",
     "tsc:cjs": "tsc --project ./tsconfig.cjs.json",
     "tsc:watch:esm": "tsc --incremental --watch",
     "tsc:watch:cjs": "tsc --incremental --watch --project ./tsconfig.cjs.json",
-    "clean": "rm -rf dist/",
-    "reset": "git clean -Xdf && pnpm install && pnpm build",
-    "release": "release-me patch"
+    "========= Test": "",
+    "test": "vitest",
+    "========= Build readme.md": "",
+    "docs": "mdocs",
+    "========= Formatting": "",
+    "format": "pnpm run format:biome",
+    "format:prettier": "git ls-files | egrep '\\.(json|js|jsx|css|ts|tsx|vue|mjs|cjs)$' | grep --invert-match package.json | xargs pnpm exec prettier --write",
+    "format:biome": "biome format --write .",
+    "format:check": "biome format . || echo Fix formatting by running: $ pnpm -w run format",
+    "========= Release": "",
+    "release": "release-me patch",
+    "========= Reset": "",
+    "reset": "git clean -Xdf && pnpm install && pnpm run build"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.7.2",
     "@brillout/mdocs": "^0.1.30",
-    "@brillout/release-me": "^0.0.5",
-    "@types/node": "17.0.13",
+    "@brillout/release-me": "^0.3.8",
+    "@types/node": "^20.5.6",
+    "@types/react": "^18.2.21",
     "lodash.isequal": "^4.5.0",
+    "prettier": "^3.2.5",
     "react": "^17.0.2",
-    "self-import": "^1.0.1",
-    "typescript": "^4.8.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.3"
+  },
+  "// Use @vitest/snapshot PR https://github.com/vitest-dev/vitest/pull/3961": "",
+  "pnpm": {
+    "overrides": {
+      "vitest>@vitest/snapshot": "npm:@brillout/vitest-snapshot@0.35.0-prerelease"
+    }
   },
   "files": [
     "dist/",
@@ -45,7 +64,7 @@
     "*.js"
   ],
   "repository": "github:brillout/json-serializer",
-  "packageManager": "pnpm@7.9.5",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   }
